@@ -48,8 +48,6 @@
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a:before,
 .sidebar-wrapper ul li a i,
 .page-wrapper .page-content,
-/* .sidebar-wrapper .sidebar-search input.search-menu,
-.sidebar-wrapper .sidebar-search .input-group-text, */
 .sidebar-wrapper .sidebar-menu ul li a,
 #show-sidebar,
 #close-sidebar {
@@ -59,24 +57,6 @@
     -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
   }
-
-  /*----------------page-wrapper----------------*/
-
-  /* .page-wrapper {
-  height: 100vh;
-}
-
-.page-wrapper .theme {
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  border-radius: 4px;
-  margin: 2px;
-}
-
-.page-wrapper .theme.chiller-theme {
-  background: #1e2229;
-} */
 
   /*----------------toggeled sidebar----------------*/
 
@@ -89,6 +69,7 @@
       padding-left: 300px;
     }
   }
+
   /*----------------show sidebar button----------------*/
   #show-sidebar {
     position: fixed;
@@ -101,8 +82,8 @@
   .page-wrapper.toggled #show-sidebar {
     left: -40px;
   }
-  /*----------------sidebar-wrapper----------------*/
 
+  /*----------------sidebar-wrapper----------------*/
   .sidebar-wrapper {
     width: 260px;
     height: 100%;
@@ -124,7 +105,6 @@
   }
 
   /*----------------sidebar-content----------------*/
-
   .sidebar-content {
     max-height: calc(100% - 30px);
     height: calc(100% - 30px);
@@ -137,9 +117,8 @@
   }
 
   /*--------------------sidebar-brand----------------------*/
-
   .sidebar-wrapper .sidebar-brand {
-    padding: 10px 20px;
+    padding: 12px 20px;
     display: flex;
     align-items: center;
   }
@@ -156,7 +135,6 @@
   }
 
   /*----------------------sidebar-menu-------------------------*/
-
   .sidebar-wrapper .sidebar-menu {
     padding-bottom: 10px;
   }
@@ -266,7 +244,6 @@
   }
 
   /*------scroll bar---------------------*/
-
   ::-webkit-scrollbar {
     width: 5px;
     height: 7px;
@@ -302,7 +279,6 @@
   }
 
   /*-----------------------------chiller-theme-------------------------------------------------*/
-
   .chiller-theme .sidebar-wrapper {
     background: #31353d;
   }
@@ -390,20 +366,18 @@
 
 <div
   class="page-wrapper chiller-theme toggled"
-  ng-controller="SidebarMenuController"
->
+  ng-controller="SidebarMenuController">
   <a
     id="show-sidebar"
     href=""
     ng-click="showSidebar()"
-    class="btn btn-sm btn-dark"
-  >
+    class="btn btn-sm btn-dark">
     <i class="fas fa-bars"></i>
   </a>
   <nav id="sidebar" class="sidebar-wrapper">
     <div class="sidebar-content">
       <div class="sidebar-brand">
-        <a href="" ng-click="heading()">My-E-State</a>
+        <a href="" ng-click="">My-E-State</a>
         <div id="close-sidebar" ng-click="closeSidebar()">
           <i class="fas fa-times"></i>
         </div>
@@ -415,53 +389,84 @@
             <span>General</span>
           </li>
 
-          <li id="entitiesDropdown" class="sidebar-dropdown">
+          <li ng-repeat="item in menuItems">
+            <a
+              ui-sref="internalBasePage.webPages({ webPageName: item.name })"
+              ng-click="changeStateAccToSelection(item, item);"
+              href="{{ item.relativeUrl }}">
+              <i class="{{ item.class }}"></i>
+              <span>{{ item.visibleName }}</span>
+            </a>
+          </li>
+
+          <li
+            ng-if="entities != null"
+            id="entitiesDropdown"
+            class="sidebar-dropdown">
             <a href="" ng-click="entitiesSidebarDropdown()">
-              <i class="fa fa-tachometer-alt"></i>
+              <i class="{{ entities.class }}"></i>
               <span>Entities</span>
             </a>
             <div id="entitiesSubmenu" class="sidebar-submenu">
               <ul>
-                <li>
-                  <a href="" ng-click="sidebarSubmenu()">Dashboard 1</a>
-                </li>
-                <li>
-                  <a href="" ng-click="sidebarSubmenu()">Dashboard 2</a>
+                <li ng-repeat="subMenuItem in entities.childModules">
+                  <a
+                    ui-sref="internalBasePage.webPages({ webPageName: subMenuItem.name })"
+                    ng-click="changeStateAccToSelection(subMenuItem, subMenuItem);"
+                    href="{{ subMenuItem.relativeUrl }}"
+                    >{{ subMenuItem.visibleName }}</a
+                  >
                 </li>
               </ul>
             </div>
           </li>
 
-          <li id="componentDropdown" class="sidebar-dropdown">
-            <a href="" ng-click="componentsSidebarDropdown()">
-              <i class="far fa-gem"></i>
-              <span>Components</span>
+          <li
+            ng-if="accounts != null"
+            id="accountsDropdown"
+            class="sidebar-dropdown">
+            <a href="" ng-click="accountsSidebarDropdown()">
+              <i class="{{ accounts.class }}"></i>
+              <span>Accounts</span>
             </a>
-            <div id="componentSubmenu" class="sidebar-submenu">
+            <div id="accountsSubmenu" class="sidebar-submenu">
               <ul>
-                <li>
-                  <a href="" ng-click="sidebarSubmenu()">General</a>
-                </li>
-                <li>
-                  <a href="" ng-click="sidebarSubmenu()">Panels</a>
+                <li ng-repeat="subMenuItem in accounts.childModules">
+                  <a
+                    ui-sref="internalBasePage.webPages({ webPageName: subMenuItem.name })"
+                    ng-click="changeStateAccToSelection(subMenuItem, subMenuItem);"
+                    href="{{ subMenuItem.relativeUrl }}"
+                    >{{ subMenuItem.visibleName }}</a
+                  >
                 </li>
               </ul>
             </div>
           </li>
 
           <li class="header-menu">
-            <span>Extra</span>
+            <span>Admin</span>
           </li>
 
-          <li ng-repeat="item in menuItems">
-            <a
-              ui-sref="internalBasePage.webPages({ webPageName : item.name })"
-              ng-click="changeStateAccToSelection(item,item);"
-              href="{{ item.relativeUrl }}"
-            >
-              <i class="{{ item.class }}"></i>
-              <span>{{ item.visibleName }}</span>
+          <li
+            ng-if="globalSettings != null"
+            id="globalSettingsDropdown"
+            class="sidebar-dropdown">
+            <a href="" ng-click="globalSettingsSidebarDropdown()">
+              <i class="{{ globalSettings.class }}"></i>
+              <span>Settings</span>
             </a>
+            <div id="globalSettingsSubmenu" class="sidebar-submenu">
+              <ul>
+                <li ng-repeat="subMenuItem in globalSettings.childModules">
+                  <a
+                    ui-sref="internalBasePage.webPages({ webPageName: subMenuItem.name })"
+                    ng-click="changeStateAccToSelection(subMenuItem, subMenuItem);"
+                    href="{{ subMenuItem.relativeUrl }}"
+                    >{{ subMenuItem.visibleName }}</a
+                  >
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
       </div>
