@@ -1,2 +1,2 @@
 # sidebar-menu
-Bootstrap 4 sidebar menu
+AngularJs Bootstrap 4 sidebar menu.
